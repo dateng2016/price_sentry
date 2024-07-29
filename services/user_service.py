@@ -30,7 +30,7 @@ class UserService:
 
     def sign_in(self, email: str) -> JSONResponse:
         otp = self.get_random_otp()
-        session_id = sessions.create_session({"otp": otp, "email": email})
+        session_id = sessions.create_session(data={"otp": otp, "email": email})
         print(f"Session id: {session_id}, OTP: {otp}")
 
         # TODO: Uncomment later
@@ -51,12 +51,12 @@ class UserService:
         expected_otp = session["data"]["otp"]
         if otp_code != expected_otp:
             return schemas.FailureResp(detail=str("Invalid OTP"))
-        sessions.end_session(session_id)
+        sessions.end_session(session_id=session_id)
         email = session["data"]["email"]
         user = await crud.get_user_by_email(db=self.async_db, email=email)
         if not user:
             print("Creating a new user")
-            id = self.sha256(email)
+            id = self.sha256(email=email)
             user = schemas.User(id=id, email=email)
             await crud.create_user(db=self.async_db, user=user)
             token = self.gen_jwt_token(user=user)
@@ -66,7 +66,7 @@ class UserService:
             return schemas.TokenResp(token=token, new=False)
 
     async def get_user_by_id(self, user_id: str) -> Optional[schemas.User]:
-        return await crud.get_user_by_id(self.async_db, user_id)
+        return await crud.get_user_by_id(db=self.async_db, user_id=user_id)
 
     async def update_user(
         self, user_id: str, first_name: str, last_name: str
@@ -101,8 +101,8 @@ class UserService:
             # Connect to Gmail's SMTP server
             connection = smtplib.SMTP("smtp.gmail.com", 587)
             connection.starttls()
-            connection.login(self.email_from, self.app_password)
-            connection.send_message(msg)
+            connection.login(user=self.email_from, password=self.app_password)
+            connection.send_message(msg=msg)
             connection.quit()
         except Exception as err:
             print(err)
@@ -117,4 +117,4 @@ class UserService:
             "user_id": user.id,
             "exp": datetime.datetime.utcnow() + datetime.timedelta(days=365),
         }
-        return jwt.encode(payload, self.secret, algorithm="HS256")
+        return jwt.encode(payload=payload, key=self.secret, algorithm="HS256")

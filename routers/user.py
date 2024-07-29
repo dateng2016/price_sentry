@@ -19,7 +19,7 @@ SettingsDep = Annotated[Settings, Depends(get_settings)]
 def sign_in_otp(
     sign_in_req: schemas.SignInOtpReq, user_service: UserServiceDep
 ) -> JSONResponse:
-    return user_service.sign_in(sign_in_req.email)
+    return user_service.sign_in(email=sign_in_req.email)
 
 
 @router.post("/confirm_otp")
@@ -27,7 +27,7 @@ async def confirm_otp(
     confirm_otp_req: schemas.ConfirmOtpReq, user_service: UserService = Depends()
 ) -> Union[schemas.TokenResp, schemas.FailureResp]:
     return await user_service.confirm(
-        confirm_otp_req.session_id, confirm_otp_req.otp_code
+        session_id=confirm_otp_req.session_id, otp_code=confirm_otp_req.otp_code
     )
 
 

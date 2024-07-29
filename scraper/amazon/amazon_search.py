@@ -44,13 +44,13 @@ def amazon_search(
     with open(HTML_PATH + "/page_source.html", "w") as file:
         file.write(page_source)
 
-    tree = etree.fromstring(page_source, etree.HTMLParser())
+    tree = etree.fromstring(text=page_source, parser=etree.HTMLParser())
 
     # The parent div contains all the potential products
     parent = tree.xpath('//*[@id="search"]/div[1]/div[1]/div/span[1]/div[1]')[0]
     if not parent:
         return None
-    parent_str = etree.tostring(parent).decode()
+    parent_str = etree.tostring(element_or_tree=parent).decode()
     with open(CURRENT_DIR + "/html/parent.html", "w") as file:
         file.write(parent_str)
 
@@ -78,7 +78,9 @@ def amazon_search(
         image_elements = potential_product.xpath(".//img")
         link_elements = potential_product.xpath(".//a")
 
-        potential_product_element_str = etree.tostring(potential_product).decode()
+        potential_product_element_str = etree.tostring(
+            element_or_tree=potential_product
+        ).decode()
         if (
             not image_elements
             or not link_elements

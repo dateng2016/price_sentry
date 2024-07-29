@@ -32,7 +32,7 @@ load_dotenv()
 
 def start_app():
     app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
-    app.include_router(user_router)
+    app.include_router(router=user_router)
     # settings = get_settings()
 
     origins = ["*"]  # Replace "*" with specific origins if needed

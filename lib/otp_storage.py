@@ -9,7 +9,7 @@ class SessionStore:
         self._sessions = {}
         self._lock = threading.Lock()
 
-    def create_session(self, data: str, expiry_time_seconds: int = 600) -> str:
+    def create_session(self, data: dict, expiry_time_seconds: int = 600) -> str:
         session_id = self._generate_session_id()
         expiry_time = time.time() + expiry_time_seconds
         with self._lock:

@@ -14,6 +14,7 @@ from config import *
 from lib.otp_storage import SessionStore
 from lib import schemas
 from db import crud, get_async_db
+from scraper.amazon.amazon_search import *
 
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
@@ -27,4 +28,4 @@ class SubscriptionService:
         self.secret = settings.secret
         self.async_db = async_db
 
-    # def search()
+    def search(self, )

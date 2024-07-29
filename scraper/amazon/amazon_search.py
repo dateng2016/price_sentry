@@ -154,7 +154,7 @@ def amazon_search(
     return products
 
 
-def track_price(link: str) -> Optional[float]:
+def amazon_track_price(link: str) -> Optional[float]:
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     driver = webdriver.Chrome()

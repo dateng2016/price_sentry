@@ -48,7 +48,7 @@ def amazon_search(
 
     # The parent div contains all the potential products
     parent = tree.xpath('//*[@id="search"]/div[1]/div[1]/div/span[1]/div[1]')[0]
-    if not parent:
+    if parent is None:
         return None
     parent_str = etree.tostring(element_or_tree=parent).decode()
     with open(CURRENT_DIR + "/html/parent.html", "w") as file:
@@ -166,27 +166,37 @@ def track_price(link: str) -> Optional[float]:
     driver.get(link)
     driver.implicitly_wait(5)
 
-    price_div_element = driver.find_element(
-        by=By.XPATH, value='//*[@id="corePrice_feature_div"]'
-    )
+    price = None
 
-    price_whole_element = price_div_element.find_element(
-        by=By.XPATH, value='.//span[@class="a-price-whole"]'
-    )
+    try:
 
-    price_fraction_element = price_div_element.find_element(
-        by=By.XPATH, value='.//span[@class="a-price-fraction"]'
-    )
+        price_div_element = driver.find_element(
+            by=By.XPATH, value='//*[@id="corePrice_feature_div"]'
+        )
 
-    price_whole = price_whole_element.text
-    price_fraction = price_fraction_element.text
-    price = price_whole + "." + price_fraction
+        price_whole_element = price_div_element.find_element(
+            by=By.XPATH, value='.//span[@class="a-price-whole"]'
+        )
+
+        price_fraction_element = price_div_element.find_element(
+            by=By.XPATH, value='.//span[@class="a-price-fraction"]'
+        )
+
+        price_whole = price_whole_element.text
+        price_fraction = price_fraction_element.text
+        price = price_whole + "." + price_fraction
+    except Exception as err:
+        print("Price not found.")
+        print(err)
 
     # For debugging purpose
     # with open(current_dir + "/page_source/prod_detail.html", "w") as file:
     #     file.write(driver.page_source)
 
     driver.quit()
+
+    if not price:
+        return None
 
     try:
         price = float(price)
@@ -199,6 +209,7 @@ def track_price(link: str) -> Optional[float]:
 
 if __name__ == "__main__":
     products = amazon_search(keyword="sony xm", must_include="sony")
+    print(f"Total number of products found: {len(products)}")
     for p in products:
         print(p)
         print("-------------")

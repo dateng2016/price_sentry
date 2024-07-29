@@ -22,10 +22,10 @@ from contextlib import contextmanager
 from fastapi import APIRouter
 from enum import Enum
 
-from app.routers.user import router as user_router
-from app.config import get_settings
-from app.db import models, crud, get_sync_db, get_async_db, sync_engine
-from app.lib.utils import UserAuthDep
+from routers.user import router as user_router
+from config import get_settings
+from db import models, crud, get_sync_db, get_async_db, sync_engine
+from lib.utils import UserAuthDep
 
 load_dotenv()
 

@@ -10,10 +10,10 @@ import smtplib
 from sqlalchemy.ext.asyncio import AsyncSession
 from email.message import EmailMessage
 
-from app.config import *
-from app.lib.otp_storage import SessionStore
-from app.lib import schemas
-from app.db import crud, get_async_db
+from config import *
+from lib.otp_storage import SessionStore
+from lib import schemas
+from db import crud, get_async_db
 
 
 sessions = SessionStore()

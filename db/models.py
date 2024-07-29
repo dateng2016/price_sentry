@@ -1,4 +1,3 @@
-from .base import Base
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.types import DECIMAL
 from sqlalchemy.orm import relationship

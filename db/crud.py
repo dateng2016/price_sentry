@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Session
 from datetime import datetime
-from . import models
-from app.lib import schemas
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
+
+from lib import schemas
+from db import models
 
 
 async def get_user_by_id(db: AsyncSession, user_id: str) -> Optional[schemas.User]:

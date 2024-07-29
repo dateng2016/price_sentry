@@ -4,7 +4,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Annotated, Union
 import os
 
-from app.config import *
+from config import *
 
 security = HTTPBearer()
 SettingsDep = Annotated[Settings, Depends(get_settings)]

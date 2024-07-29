@@ -1,8 +1,3 @@
-import sys
-
-sys.path.append("/home/da/Desktop/coding/price_sentry")
-
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
@@ -12,8 +7,8 @@ from typing import Optional, List
 import logging
 from uuid import uuid1
 
-from app.scraper.utils import *
-from app.lib import schemas
+from scraper.utils import *
+from lib import schemas
 
 
 BASE_URL = "https://www.amazon.com"

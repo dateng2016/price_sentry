@@ -9,12 +9,13 @@ from fastapi.responses import JSONResponse
 import smtplib
 from sqlalchemy.ext.asyncio import AsyncSession
 from email.message import EmailMessage
-
-from config import *
 from lib.otp_storage import SessionStore
 from lib import schemas
 from db import crud, get_async_db
 from scraper.amazon.amazon_search import *
+from enum import Enum
+
+from config import *
 
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
@@ -28,4 +29,10 @@ class SubscriptionService:
         self.secret = settings.secret
         self.async_db = async_db
 
-    def search(self, )
+    def search(self, url: str) -> Optional[schemas.Product]:
+        pass
+
+    def sha256(self, link: str):
+        m = hashlib.sha256()
+        m.update(bytes(link, "utf-8"))
+        return m.hexdigest()

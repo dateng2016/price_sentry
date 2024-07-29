@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List, Dict
 import decimal
+from enum import Enum
 
 
 class FailureResp(BaseModel):
@@ -53,3 +54,10 @@ class SuccessResp(BaseModel):
 class FailureResp(BaseModel):
     detail: str
     status: str = "failure"
+
+
+class Vendor(Enum):
+    AMAZON = 1
+    BESTBUY = 2
+    EBAY = 3
+    TARGET = 4

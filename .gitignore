@@ -1,4 +1,4 @@
 *.html
 __pycache__/
-*.log
 .env
+log/

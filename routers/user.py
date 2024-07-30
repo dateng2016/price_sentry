@@ -13,7 +13,6 @@ router = APIRouter(prefix="/user", tags=["User"])
 
 # Dependency
 UserServiceDep = Annotated[UserService, Depends(UserService)]
-SettingsDep = Annotated[Settings, Depends(get_settings)]
 
 
 @router.post("/sign_in_otp")

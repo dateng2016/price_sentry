@@ -16,9 +16,11 @@ class User(Base):
 class Product(Base):
     __tablename__ = "product"
 
-    id = Column(String(64), primary_key=True)
-    vendor = Column(SmallInteger)
+    title = Column(String(1024))
+    vendor = Column(SmallInteger())
     link = Column(String(2048))
+    link_id = Column(String(64), primary_key=True)
+    img_src = Column(String(2048))
     price = Column(DECIMAL(precision=10, scale=2))
 
 

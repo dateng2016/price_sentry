@@ -41,9 +41,10 @@ class TokenResp(BaseModel):
 
 class Product(BaseModel):
     title: str
-    link_href: str
-    img_src: str
+    vendor: int
+    link: str
     link_id: str
+    img_src: str
     price: float
 
 
@@ -54,6 +55,9 @@ class SuccessResp(BaseModel):
 class FailureResp(BaseModel):
     detail: str
     status: str = "failure"
+
+
+# class ProductResp(BaseModel):
 
 
 class Vendor(Enum):

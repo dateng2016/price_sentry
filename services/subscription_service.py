@@ -29,7 +29,16 @@ class SubscriptionService:
         self.secret = settings.secret
         self.async_db = async_db
 
-    def search(self, url: str) -> Optional[schemas.Product]:
+    def get_product(self, user_id: str) -> Optional[List[schemas.Product]]:
+        pass
+
+    def search(self, link: str) -> Optional[schemas.Product]:
+        pass
+
+    async def subscribe(self, user_id: str, link: str):
+        # First check if the link already exists in the Product table
+        # If exists, we don't worry about it, if not, we create another
+        # row in the product table
         pass
 
     def sha256(self, link: str):

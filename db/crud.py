@@ -53,3 +53,9 @@ async def update_user(db: AsyncSession, user_id: str, first_name: str, last_name
         await db.commit()
     except Exception as err:
         print(err)
+
+
+async def get_product_by_user_id(
+    db: AsyncSession, user_id: str
+) -> Optional[List[schemas.Product]]:
+    pass

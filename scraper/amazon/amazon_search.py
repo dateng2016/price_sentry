@@ -1,3 +1,8 @@
+import sys
+
+sys.path.append("/home/da/Desktop/coding/price_sentry/app")
+
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
@@ -5,10 +10,11 @@ import os
 from lxml import etree
 from typing import Optional, List
 import logging
-from uuid import uuid1
+
 
 from scraper.utils import *
 from lib import schemas
+from lib.utils import hash256
 
 
 BASE_URL = "https://www.amazon.com"
@@ -24,12 +30,10 @@ logging.basicConfig(
 )
 
 
-def amazon_search(
-    keyword: str, must_include: str = None
-) -> Optional[List[schemas.Product]]:
+def amazon_search(keyword: str, include: str = None) -> Optional[List[schemas.Product]]:
 
-    must_include = must_include or ""
-    must_include_ls = must_include.split(" ")
+    include = include or ""
+    include_ls = include.split(" ")
 
     driver = webdriver.Chrome()
     driver.implicitly_wait(5)
@@ -58,7 +62,7 @@ def amazon_search(
     #   has to have an image
     #   has to contain 'out of 5 stars'
     #   has to contain a <a> tag
-    #   has to include every word in the "must_include" list
+    #   has to include every word in the "include" list
 
     products = []
     html_str = ""  # For debugging purpose
@@ -124,14 +128,14 @@ def amazon_search(
             )
             title = title_element.text
 
-            has_must_include = True
-            for word in must_include_ls:
+            has_include = True
+            for word in include_ls:
                 if word.lower() not in title.lower():
-                    has_must_include = False
+                    has_include = False
                     break
             if (
-                not has_must_include
-            ):  # The title of this product does not contain the must_include keywords
+                not has_include
+            ):  # The title of this product does not contain the include keywords
 
                 continue
         except:
@@ -140,9 +144,10 @@ def amazon_search(
 
         product = schemas.Product(
             title=title,
-            link_href=product_link,
+            vendor=schemas.Vendor.AMAZON.value,
+            link=product_link,
+            link_id=hash256(keyword=product_link),
             img_src=src,
-            link_id=uuid1().__str__(),
             price=price,
         )
 
@@ -203,7 +208,8 @@ def amazon_track_price(link: str) -> Optional[float]:
 
 
 if __name__ == "__main__":
-    products = amazon_search(keyword="sony xm", must_include="sony")
+
+    products = amazon_search(keyword="sony xm", include="sony")
     print(f"Total number of products found: {len(products)}")
     for p in products:
         print(p)

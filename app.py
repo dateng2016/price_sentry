@@ -22,7 +22,7 @@ from contextlib import contextmanager
 from fastapi import APIRouter
 from enum import Enum
 
-from routers.user import router as user_router
+from routers import *
 from config import get_settings
 from db import models, crud, get_sync_db, get_async_db, sync_engine
 from lib.utils import UserAuthDep
@@ -33,6 +33,7 @@ load_dotenv()
 def start_app():
     app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
     app.include_router(router=user_router)
+    app.include_router(router=sub_router)
     # settings = get_settings()
 
     origins = ["*"]  # Replace "*" with specific origins if needed

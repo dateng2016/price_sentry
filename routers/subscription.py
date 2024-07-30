@@ -20,11 +20,17 @@ SubServiceDep = Annotated[UserService, Depends(SubscriptionService)]
 
 @router.get("/search")
 def search(
-    user_id: UserAuthDep, kw: str, vendor: str
+    user_id: UserAuthDep, kw: str, vendor: schemas.VendorType, include: str = None
 ) -> Optional[List[schemas.Product]]:
-    amazon_search.amazon_search(
-        keyword=kw,
-    )
+
+    if vendor == "amazon":
+        products = amazon_search.amazon_search(keyword=kw, include=include)
+        return products
+
+
+@router.post("/subscribe")
+async def subscribe(user_id: UserAuthDep, product: schemas.Product):
+    link_id = product.link_id
 
 
 @router.get("/prod")

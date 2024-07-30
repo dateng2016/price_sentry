@@ -32,7 +32,17 @@ def search(
         return products
 
 
-@router.post("/subscribe")
+@router.get("/product")
+async def get_products(db: AsyncSessionDep, user_id: UserAuthDep):
+    subscriptions = await crud.get_all_sub(db=db, user_id=user_id)
+    products = []
+    for sub in subscriptions:
+        product = await crud.get_product_by_id(db=db, link_id=sub.link_id)
+        products.append(product)
+    return products
+
+
+@router.post("/product")
 async def subscribe(
     user_id: UserAuthDep, product: schemas.Product, db: AsyncSessionDep
 ):
@@ -59,8 +69,7 @@ async def subscribe(
     return schemas.SubSuccess()
 
 
-@router.get("/prod")
-def get_product(
-    user_id: UserAuthDep, sub_service: SubServiceDep
-) -> Optional[List[schemas.Product]]:
+@router.delete("/product/{link_id}")
+async def unsubscribe(db: AsyncSessionDep, user_id: UserAuthDep, link_id: str):
+    # First delete the subscription with this user_id and link_id
     pass

@@ -96,7 +96,6 @@ async def get_subscription(
             )
         )
         subscription = res.scalar()
-
         return subscription
     except Exception as err:
         print(err)
@@ -108,5 +107,50 @@ async def create_subscription(db: AsyncSession, user_id: str, link_id: str):
         db.add(subscription)
         await db.commit()
         return "Success"
+    except Exception as err:
+        print(err)
+
+
+async def get_all_sub(db: AsyncSession, user_id: str):
+    try:
+        res = await db.execute(
+            select(models.Subscription).where(models.Subscription.user_id == user_id)
+        )
+        subscriptions = res.scalars().all()
+        return subscriptions
+    except Exception as err:
+        print(err)
+
+
+async def unsubscribe(db: AsyncSession, user_id: str, link_id: str):
+    try:
+        # First we remove the subscription related to this user_id & link_id
+        res = await db.execute(
+            select(models.Subscription).where(
+                models.Subscription.user_id == user_id,
+                models.Subscription.link_id == link_id,
+            )
+        )
+        subscription = res.scalar()
+        await db.delete(subscription)
+        await db.commit()
+        # Now we check in the subscription table if there is another row with the same link_id
+
+        res = await db.execute(
+            select(models.Subscription).where(models.Subscription.link_id == link_id)
+        )
+        subscription = res.scalar()
+        # If there is another subscription in there, we do nothing,
+        if subscription:
+            return
+
+        # If not, we get rid of the product in the product table
+        res = await db.execute(
+            select(models.Product).where(models.Product.link_id == link_id)
+        )
+        product = res.scalar()
+        await db.delete(product)
+        await db.commit()
+
     except Exception as err:
         print(err)

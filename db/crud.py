@@ -55,7 +55,42 @@ async def update_user(db: AsyncSession, user_id: str, first_name: str, last_name
         print(err)
 
 
-async def get_product_by_user_id(
-    db: AsyncSession, user_id: str
+async def get_product_by_id(
+    db: AsyncSession, link_id: str
 ) -> Optional[List[schemas.Product]]:
-    pass
+    try:
+        res = await db.execute(
+            select(models.Product).where(models.Product.link_id == link_id)
+        )
+        product = res.scalar()
+        print(product)
+        return product
+    except Exception as err:
+        print(err)
+
+
+async def get_subscription(
+    db: AsyncSession, user_id: str, link_id: str
+) -> Optional[schemas.Subscription]:
+    try:
+        res = await db.execute(
+            select(models.Subscription).where(
+                models.Subscription.user_id == user_id,
+                models.Subscription.link_id == link_id,
+            )
+        )
+        subscription = res.scalar()
+
+        return subscription
+    except Exception as err:
+        print(err)
+
+
+async def create_subscription(db: AsyncSession, user_id: str, link_id: str):
+    try:
+        subscription = models.Subscription(user_id=user_id, link_id=link_id)
+        db.add(subscription)
+        await db.commit()
+        return "Success"
+    except Exception as err:
+        print(err)

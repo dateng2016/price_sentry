@@ -24,8 +24,8 @@ class Product(Base):
     price = Column(DECIMAL(precision=10, scale=2))
 
 
-class Subscriptoin(Base):
+class Subscription(Base):
     __tablename__ = "subscription"
 
     user_id = Column(String(64), primary_key=True)
-    product_id = Column(String(64), primary_key=True)
+    link_id = Column(String(64), primary_key=True)

@@ -40,8 +40,3 @@ class SubscriptionService:
         # If exists, we don't worry about it, if not, we create another
         # row in the product table
         pass
-
-    def sha256(self, link: str):
-        m = hashlib.sha256()
-        m.update(bytes(link, "utf-8"))
-        return m.hexdigest()

@@ -59,9 +59,19 @@ class FailureResp(BaseModel):
     status: str = "failure"
 
 
-# class SubReq(BaseModel):
-#     email: str
-#     link: str
+class Subscription(BaseModel):
+    user_id: str
+    link_id: str
+
+
+class SubFailure(BaseModel):
+    status: str = "failure"
+    detail: str
+
+
+class SubSuccess(BaseModel):
+    status: str = "failure"
+    detail: str = "You have successfully subscribed!"
 
 
 class Vendor(Enum):

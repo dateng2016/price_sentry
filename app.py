@@ -51,3 +51,19 @@ app = start_app()
 async def health(request: Request, user_id: UserAuthDep) -> str:
 
     return f"Price Sentry is up and running."
+
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
+AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_db)]
+
+
+@app.get("/testing")
+async def testing(request: Request, user_id: UserAuthDep, db: AsyncSessionDep):
+    x = await crud.get_subscription(db=db, user_id=user_id, link_id="123")
+    print(user_id)
+    return x
+
+
+# 2f0cadd212d820563995c4385e16a7b1f2453354bdaa31dd02889923608623f2
+# 2f0cadd212d820563995c4385e16a7b1f2453354bdaa31dd02889923608623f2

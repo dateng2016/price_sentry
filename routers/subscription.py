@@ -49,7 +49,13 @@ async def subscribe(
     await crud.create_subscription(db=db, user_id=user_id, link_id=link_id)
 
     # Check if the product already exists in the Product table
+    product_in_db = await crud.get_product_by_id(db=db, link_id=link_id)
 
+    # It already exists. Do nothing
+    if product_in_db:
+        return
+
+    await crud.create_product(db=db, product=product)
     return schemas.SubSuccess()
 
 

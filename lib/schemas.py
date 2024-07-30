@@ -70,7 +70,7 @@ class SubFailure(BaseModel):
 
 
 class SubSuccess(BaseModel):
-    status: str = "failure"
+    status: str = "Success"
     detail: str = "You have successfully subscribed!"
 
 

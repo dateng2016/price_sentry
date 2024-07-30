@@ -63,8 +63,24 @@ async def get_product_by_id(
             select(models.Product).where(models.Product.link_id == link_id)
         )
         product = res.scalar()
-        print(product)
+        # print(product)
         return product
+    except Exception as err:
+        print(err)
+
+
+async def create_product(db: AsyncSession, product: schemas.Product):
+    try:
+        product_to_create = models.Product(
+            title=product.title,
+            vendor=product.vendor,
+            link=product.link,
+            link_id=product.link_id,
+            img_src=product.img_src,
+            price=product.price,
+        )
+        db.add(product_to_create)
+        await db.commit()
     except Exception as err:
         print(err)
 

@@ -1,12 +1,10 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import APIRouter
 from fastapi import Depends
 from typing import Annotated, Union
 from fastapi.responses import JSONResponse
 
 from services.user_service import UserService
 from lib import schemas
-from config import Settings, get_settings
 from lib.utils import UserAuthDep
 
 router = APIRouter(prefix="/user", tags=["User"])

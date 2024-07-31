@@ -26,7 +26,7 @@ logging.basicConfig(
     level=logging.ERROR,  # Set the logging level to capture all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format="%(asctime)s - %(levelname)s - %(message)s",  # Specify the format of log messages
     filename="log/scraper.log",  # Optional: Specify a file to write logs to
-    filemode="w",  # Optional: Set the mode for writing logs ('w' for write)
+    filemode="a",  # Optional: Set the mode for writing logs ('w' for write)
 )
 
 

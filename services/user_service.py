@@ -1,14 +1,16 @@
+# from sqlalchemy.orm import Session
 import random
 from typing import Annotated, Union
 from fastapi import Depends
 import hashlib
 import jwt
 import datetime
-from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 import smtplib
 from sqlalchemy.ext.asyncio import AsyncSession
 from email.message import EmailMessage
+import logging
+
 
 from config import *
 from lib.otp_storage import SessionStore

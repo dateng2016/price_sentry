@@ -22,12 +22,14 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 HTML_PATH = CURRENT_DIR + "/html"
 
 # Configure logging
-logging.basicConfig(
-    level=logging.ERROR,  # Set the logging level to capture all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Specify the format of log messages
-    filename="log/scraper.log",  # Optional: Specify a file to write logs to
-    filemode="a",  # Optional: Set the mode for writing logs ('w' for write)
-)
+
+
+logger = logging.getLogger(name=__name__)
+logger.setLevel(level=logging.INFO)
+formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - AMAZON - %(message)s")
+file_handler = logging.FileHandler(filename="log/scraper.log", mode="a")
+file_handler.setFormatter(fmt=formatter)
+logger.addHandler(hdlr=file_handler)
 
 
 def amazon_search(keyword: str, include: str = None) -> Optional[List[schemas.Product]]:
@@ -109,7 +111,7 @@ def amazon_search(keyword: str, include: str = None) -> Optional[List[schemas.Pr
                 by=By.XPATH, value='.//span[@class="a-price-fraction"]'
             )
         except:
-            logging.error(f"No price found for link: {product_link}")
+            logger.error(f"No price found for link: {product_link}")
             continue
 
         price_whole = price_whole_element.text
@@ -139,7 +141,7 @@ def amazon_search(keyword: str, include: str = None) -> Optional[List[schemas.Pr
 
                 continue
         except:
-            logging.error(f"No title found for link: {product_link}")
+            logger.error(f"No title found for link: {product_link}")
             continue
 
         product = schemas.Product(

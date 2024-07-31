@@ -23,14 +23,12 @@ SettingsDep = Annotated[Settings, Depends(get_settings)]
 AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_db)]
 
 
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level to capture all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Specify the format of log messages
-    filename="log/user.log",  # Optional: Specify a file to write logs to
-    filemode="a",  # Optional: Set the mode for writing logs ('w' for write)
-)
-
-logging.info("is logging working?")
+logger = logging.getLogger(name=__name__)
+logger.setLevel(level=logging.INFO)
+formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
+file_handler = logging.FileHandler(filename="log/user.log", mode="a")
+file_handler.setFormatter(fmt=formatter)
+logger.addHandler(hdlr=file_handler)
 
 
 class UserService:
@@ -44,13 +42,15 @@ class UserService:
         try:
             otp = self.get_random_otp()
             session_id = sessions.create_session(data={"otp": otp, "email": email})
-            logging.info(f"Session id: {session_id}. OTP code {otp} sent to {email}")
+            logger.info(
+                f"User email {email} signing in. Session id: {session_id}. OTP code {otp}."
+            )
             print(f"Session id: {session_id}. OTP code {otp} sent to {email}")
             # Uncomment during production
             # self.send_otp_via_email(email, otp)
             return schemas.SessionResp(session_id=session_id)
         except Exception as err:
-            logging.error(f"Failed to send OTP code to {email}. {err}")
+            logger.error(f"Failed to send OTP code to {email}. {err}")
             return schemas.FailureResp(
                 detail=f"Sign in failed. Failed to send OTP code to {email}. "
             )

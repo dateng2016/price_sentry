@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from fastapi import Depends
 from typing import Annotated, Union
 from fastapi.responses import JSONResponse
-import logging
 
 from services.user_service import UserService
 from lib import schemas
@@ -12,13 +11,6 @@ router = APIRouter(prefix="/user", tags=["User"])
 
 # Dependency
 UserServiceDep = Annotated[UserService, Depends(UserService)]
-
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level to capture all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Specify the format of log messages
-    filename="log/user.log",  # Optional: Specify a file to write logs to
-    filemode="a",  # Optional: Set the mode for writing logs ('w' for write)
-)
 
 
 @router.post("/sign_in_otp")

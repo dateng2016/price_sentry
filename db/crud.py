@@ -7,40 +7,41 @@ import logging
 from lib import schemas
 from db import models
 
-logging.basicConfig(
-    level=logging.INFO,  # Set the logging level to capture all levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Specify the format of log messages
-    filename="log/db.log",  # Optional: Specify a file to write logs to
-    filemode="a",  # Optional: Set the mode for writing logs ('w' for write)
-)
+
+logger = logging.getLogger(name=__name__)
+logger.setLevel(level=logging.INFO)
+formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
+file_handler = logging.FileHandler(filename="log/db.log", mode="a")
+file_handler.setFormatter(fmt=formatter)
+logger.addHandler(hdlr=file_handler)
 
 
 async def get_user_by_id(db: AsyncSession, user_id: str) -> Optional[schemas.User]:
     try:
-        logging.info(f"Getting user by id: {user_id}")
+        logger.info(f"Getting user by id: {user_id}")
         res = await db.execute(select(models.User).where(models.User.id == user_id))
         user = res.scalar()
         print(f"Found user: {user}")
         return user
     except Exception as err:
-        logging.error(f"Failed to get user by id: {user_id}. {err}")
+        logger.error(f"Failed to get user by id: {user_id}. {err}")
         return None
 
 
 async def get_user_by_email(db: AsyncSession, email: str) -> Optional[schemas.User]:
     try:
-        logging.info(f"Getting user by email: {email}")
+        logger.info(f"Getting user by email: {email}")
         res = await db.execute(select(models.User).where(models.User.email == email))
         user = res.scalar()
         return user
     except Exception as err:
-        logging.error(f"Failed to get user by email: {email}. {err}")
+        logger.error(f"Failed to get user by email: {email}. {err}")
         return None
 
 
 async def create_user(db: AsyncSession, user: schemas.User):
     try:
-        logging.info(f"Creating user with email: {user.email}")
+        logger.info(f"Creating user with email: {user.email}")
         user = models.User(
             id=user.id,
             email=user.email,
@@ -50,13 +51,13 @@ async def create_user(db: AsyncSession, user: schemas.User):
         db.add(user)
         await db.commit()
     except Exception as err:
-        logging.error(f"Failed to create user with email: {user.email}. {err}")
+        logger.error(f"Failed to create user with email: {user.email}. {err}")
         return
 
 
 async def update_user(db: AsyncSession, user_id: str, first_name: str, last_name: str):
     try:
-        logging.info(f"Updating user info with user_id {user_id}")
+        logger.info(f"Updating user info with user_id {user_id}")
         await db.execute(
             update(models.User)
             .where(models.User.id == user_id)
@@ -64,7 +65,7 @@ async def update_user(db: AsyncSession, user_id: str, first_name: str, last_name
         )
         await db.commit()
     except Exception as err:
-        logging.error(f"Failed to update user info with user_id {user_id}. {err}")
+        logger.error(f"Failed to update user info with user_id {user_id}. {err}")
         return
 
 
@@ -72,20 +73,20 @@ async def get_product_by_id(
     db: AsyncSession, link_id: str
 ) -> Optional[List[schemas.Product]]:
     try:
-        logging.info(f"Getting product by link id: {link_id}")
+        logger.info(f"Getting product by link id: {link_id}")
         res = await db.execute(
             select(models.Product).where(models.Product.link_id == link_id)
         )
         product = res.scalar()
         return product
     except Exception as err:
-        logging.error(f"Failed to get product by link id: {link_id}. {err}")
+        logger.error(f"Failed to get product by link id: {link_id}. {err}")
         return
 
 
 async def create_product(db: AsyncSession, product: schemas.Product):
     try:
-        logging.info(
+        logger.info(
             f"Creating product with title {product.title}, vendor of {schemas.Vendor(product.vendor)}, link {product.link}, link id {product.link_id}, img src {product.img_src}, price {product.price}"
         )
         product_to_create = models.Product(
@@ -99,7 +100,7 @@ async def create_product(db: AsyncSession, product: schemas.Product):
         db.add(product_to_create)
         await db.commit()
     except Exception as err:
-        logging.error(
+        logger.error(
             f"Failed to create product with title {product.title}, vendor of {schemas.Vendor(product.vendor)}, link {product.link}, link id {product.link_id}, img src {product.img_src}, price {product.price}. {err}"
         )
 
@@ -108,7 +109,7 @@ async def get_subscription(
     db: AsyncSession, user_id: str, link_id: str
 ) -> Optional[schemas.Subscription]:
     try:
-        logging.info(f"Getting subscription by user id {user_id} and link id {link_id}")
+        logger.info(f"Getting subscription by user id {user_id} and link id {link_id}")
         res = await db.execute(
             select(models.Subscription).where(
                 models.Subscription.user_id == user_id,
@@ -118,43 +119,41 @@ async def get_subscription(
         subscription = res.scalar()
         return subscription
     except Exception as err:
-        logging.error(
+        logger.error(
             f"Failed to get subscription by user id {user_id} and link id {link_id}. {err}"
         )
 
 
 async def create_subscription(db: AsyncSession, user_id: str, link_id: str):
     try:
-        logging.info(
-            f"Creating subscription by user id {user_id} and link id {link_id}"
-        )
+        logger.info(f"Creating subscription by user id {user_id} and link id {link_id}")
         subscription = models.Subscription(user_id=user_id, link_id=link_id)
         db.add(subscription)
         await db.commit()
         return "Success"
     except Exception as err:
-        logging.error(
+        logger.error(
             f"Failed ti create subscription by user id {user_id} and link id {link_id}. {err}"
         )
 
 
 async def get_all_sub(db: AsyncSession, user_id: str):
     try:
-        logging.info(f"Getting all subscriptions for user with user id {user_id}")
+        logger.info(f"Getting all subscriptions for user with user id {user_id}")
         res = await db.execute(
             select(models.Subscription).where(models.Subscription.user_id == user_id)
         )
         subscriptions = res.scalars().all()
         return subscriptions
     except Exception as err:
-        logging.error(
+        logger.error(
             f"Failed to get all subscriptions for user with user id {user_id}. {err}"
         )
 
 
 async def unsubscribe(db: AsyncSession, user_id: str, link_id: str):
     try:
-        logging.info(
+        logger.info(
             f"Unsubscribing product with link id {link_id} for user with user id {user_id}"
         )
         # First we remove the subscription related to this user_id & link_id
@@ -178,7 +177,7 @@ async def unsubscribe(db: AsyncSession, user_id: str, link_id: str):
             return
 
         # If not, we get rid of the product in the product table
-        logging.info(
+        logger.info(
             f"No more users subscribe to the product with link id {link_id}, removing this product from the product table"
         )
         res = await db.execute(
@@ -189,6 +188,6 @@ async def unsubscribe(db: AsyncSession, user_id: str, link_id: str):
         await db.commit()
 
     except Exception as err:
-        logging.error(
+        logger.error(
             f"Failed to unsubscribe product with link id {link_id} for user with user id {user_id}. {err}"
         )

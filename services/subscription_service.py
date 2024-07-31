@@ -90,7 +90,7 @@ class SubscriptionService:
         # Check if the product already exists in the Product table
         product_in_db = await crud.get_product_by_id(db=self.async_db, link_id=link_id)
 
-        # It already exists. Do nothing
+        # It already exists. Do nothing. If not create a new product
         if not product_in_db:
             logger.info(
                 f"Creating a new product with link id {product.link_id} for user with id {user_id}"
@@ -103,4 +103,8 @@ class SubscriptionService:
     async def unsubscribe(
         self, user_id: str, link_id: str
     ) -> Union[schemas.SuccessResp, schemas.FailureResp]:
-        pass
+        logger.info(f"Unsubscribing for user {user_id} the product with id {link_id}")
+        result = await crud.unsubscribe(
+            db=self.async_db, user_id=user_id, link_id=link_id
+        )
+        return result

@@ -176,8 +176,15 @@ async def unsubscribe(
             )
         )
         subscription = res.scalar()
+        if not subscription:
+            return schemas.FailureResp(
+                detail="The user has not subscribed to this product"
+            )
         await db.delete(subscription)
         await db.commit()
+        logger.info(
+            f"Successfully ubsubscribed product with link id {link_id} for user with user id {user_id}"
+        )
         # Now we check in the subscription table if there is another row with the same link_id
 
         res = await db.execute(
@@ -186,7 +193,7 @@ async def unsubscribe(
         subscription = res.scalar()
         # If there is another subscription in there, we do nothing,
         if subscription:
-            return
+            return schemas.SuccessResp(detail="Unsubscription successful")
 
         # If not, we get rid of the product in the product table
         logger.info(
@@ -198,8 +205,10 @@ async def unsubscribe(
         product = res.scalar()
         await db.delete(product)
         await db.commit()
+        return schemas.SuccessResp(detail="Unsubscription successful")
 
     except Exception as err:
         logger.error(
             f"Failed to unsubscribe product with link id {link_id} for user with user id {user_id}. {err}"
         )
+        return schemas.FailureResp(detail="Unsubscription failed")

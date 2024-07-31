@@ -49,6 +49,7 @@ async def subscribe(
 
 
 @router.delete("/product/{link_id}")
-async def unsubscribe(db: AsyncSessionDep, user_id: UserAuthDep, link_id: str):
-    # First delete the subscription with this user_id and link_id
-    pass
+async def unsubscribe(
+    user_id: UserAuthDep, link_id: str, sub_service: SubServiceDep
+) -> Union[schemas.SuccessResp, schemas.FailureResp]:
+    return await sub_service.unsubscribe(user_id=user_id, link_id=link_id)

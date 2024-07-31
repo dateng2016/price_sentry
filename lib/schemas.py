@@ -7,9 +7,18 @@ from enum import Enum
 VendorType = Literal["amazon", "bestbuy", "ebay"]
 
 
+class SuccessResp(BaseModel):
+    status: str = "success"
+    detail: str
+
+
 class FailureResp(BaseModel):
     detail: str
     status: str = "failure"
+
+
+class SessionResp(BaseModel):
+    session_id: str
 
 
 class SignInOtpReq(BaseModel):
@@ -50,28 +59,9 @@ class Product(BaseModel):
     price: float
 
 
-class SuccessResp(BaseModel):
-    status: str = "success"
-
-
-class FailureResp(BaseModel):
-    detail: str
-    status: str = "failure"
-
-
 class Subscription(BaseModel):
     user_id: str
     link_id: str
-
-
-class SubFailure(BaseModel):
-    status: str = "failure"
-    detail: str
-
-
-class SubSuccess(BaseModel):
-    status: str = "Success"
-    detail: str = "You have successfully subscribed!"
 
 
 class Vendor(Enum):

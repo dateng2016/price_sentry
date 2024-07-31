@@ -53,7 +53,7 @@ async def subscribe(
     # The subscription already exists
     if subscription:
         # print(res.user_id, res.link_id)
-        return schemas.SubFailure(detail="You have already subscribed to this product")
+        return schemas.FailureResp(detail="You have already subscribed to this product")
 
     # Now we create a new subscription
     await crud.create_subscription(db=db, user_id=user_id, link_id=link_id)
@@ -66,7 +66,9 @@ async def subscribe(
         return
 
     await crud.create_product(db=db, product=product)
-    return schemas.SubSuccess()
+    return schemas.SuccessResp(
+        detail="You have successfully subscribed to this product"
+    )
 
 
 @router.delete("/product/{link_id}")

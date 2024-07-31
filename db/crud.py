@@ -6,14 +6,17 @@ import logging
 
 from lib import schemas
 from db import models
+from lib.utils import get_logger
 
 
-logger = logging.getLogger(name=__name__)
-logger.setLevel(level=logging.INFO)
-formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
-file_handler = logging.FileHandler(filename="log/db.log", mode="a")
-file_handler.setFormatter(fmt=formatter)
-logger.addHandler(hdlr=file_handler)
+# logger = logging.getLogger(name=__name__)
+# logger.setLevel(level=logging.INFO)
+# formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
+# file_handler = logging.FileHandler(filename="log/db.log", mode="a")
+# file_handler.setFormatter(fmt=formatter)
+# logger.addHandler(hdlr=file_handler)
+
+logger = get_logger(name=__name__, filename="log/db.log")
 
 
 async def get_user_by_id(db: AsyncSession, user_id: str) -> Optional[schemas.User]:

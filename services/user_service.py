@@ -16,6 +16,7 @@ from config import *
 from lib.otp_storage import SessionStore
 from lib import schemas
 from db import crud, get_async_db
+from lib.utils import get_logger
 
 
 sessions = SessionStore()
@@ -23,12 +24,14 @@ SettingsDep = Annotated[Settings, Depends(get_settings)]
 AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_db)]
 
 
-logger = logging.getLogger(name=__name__)
-logger.setLevel(level=logging.INFO)
-formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
-file_handler = logging.FileHandler(filename="log/user.log", mode="a")
-file_handler.setFormatter(fmt=formatter)
-logger.addHandler(hdlr=file_handler)
+# logger = logging.getLogger(name=__name__)
+# logger.setLevel(level=logging.INFO)
+# formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
+# file_handler = logging.FileHandler(filename="log/user.log", mode="a")
+# file_handler.setFormatter(fmt=formatter)
+# logger.addHandler(hdlr=file_handler)
+
+logger = get_logger(name=__name__, filename="log/user.log")
 
 
 class UserService:
@@ -45,12 +48,16 @@ class UserService:
             logger.info(
                 f"User email {email} signing in. Session id: {session_id}. OTP code {otp}."
             )
+
+            # For testing purposes, commewnt during production
             print(f"Session id: {session_id}. OTP code {otp} sent to {email}")
+
             # Uncomment during production
             # self.send_otp_via_email(email, otp)
+
             return schemas.SessionResp(session_id=session_id)
         except Exception as err:
-            logger.error(f"Failed to send OTP code to {email}. {err}")
+            logger.error(f"Sign in failed. Failed to send OTP code to {email}. {err}")
             return schemas.FailureResp(
                 detail=f"Sign in failed. Failed to send OTP code to {email}. "
             )
@@ -58,28 +65,37 @@ class UserService:
     async def confirm(
         self, session_id: str, otp_code: str
     ) -> Union[schemas.TokenResp, schemas.FailureResp]:
+        logger.info(f"Retrieving session with id {session_id}")
         session = sessions.retrieve_session_data(session_id)
         if (
             session is None
             or session.get("data") is None
             or session.get("data").get("otp") is None
         ):
+            logger.info(f"Failed to retrieve sessoin with sessions id {session_id}")
             return schemas.FailureResp(detail=str("Invalid session id"))
         expected_otp = session["data"]["otp"]
         if otp_code != expected_otp:
+            logger.info(f"Wrong otp code {otp_code}, does not match {expected_otp}")
             return schemas.FailureResp(detail=str("Invalid OTP"))
         sessions.end_session(session_id=session_id)
         email = session["data"]["email"]
         user = await crud.get_user_by_email(db=self.async_db, email=email)
         if not user:
-            print("Creating a new user")
+            logger.info(f"Creating a new user with email {email}")
             id = self.sha256(email=email)
             user = schemas.User(id=id, email=email)
             await crud.create_user(db=self.async_db, user=user)
             token = self.gen_jwt_token(user=user)
+            logger.info(
+                f"Successfully created user account with email {email}, sending jwt token {token}"
+            )
             return schemas.TokenResp(token=token, new=True)
         else:
             token = self.gen_jwt_token(user=user)
+            logger.info(
+                f"Sending jwt token {token} to existing user with email {email}"
+            )
             return schemas.TokenResp(token=token, new=False)
 
     async def get_user_by_id(self, user_id: str) -> Optional[schemas.User]:
@@ -89,14 +105,17 @@ class UserService:
         self, user_id: str, first_name: str, last_name: str
     ) -> Union[schemas.SuccessResp, schemas.FailureResp]:
         try:
+            logger.info(f"Updating user info for user with id {user_id}")
             await crud.update_user(
                 db=self.async_db,
                 user_id=user_id,
                 first_name=first_name,
                 last_name=last_name,
             )
+            logger.info(f"Succesfully updated user info for user with id {user_id}")
             return schemas.SuccessResp(detail="Successfully updated user info")
         except Exception as err:
+            logger.info(f"Failed to update user info for user with id {user_id}")
             return schemas.FailureResp(
                 detail="Unable to update user info at the moment, please try again later"
             )
@@ -122,7 +141,7 @@ class UserService:
             connection.send_message(msg=msg)
             connection.quit()
         except Exception as err:
-            print(err)
+            logger.error(f"Email sending error, {err}")
 
     def sha256(self, email: str):
         m = hashlib.sha256()

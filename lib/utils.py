@@ -2,7 +2,7 @@ import jwt
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Annotated, Union
-import os
+import logging
 import hashlib
 
 
@@ -54,3 +54,19 @@ def hash256(keyword: str) -> str:
 
     # Return the hexadecimal representation of the hash
     return sha256.hexdigest()
+
+
+def get_logger(
+    name: str,
+    filename: str,
+    filemode: str = "a",
+    level=logging.INFO,
+    fmt="%(asctime)s - %(levelname)s - %(message)s",
+) -> logging.Logger:
+    logger = logging.getLogger(name=name)
+    logger.setLevel(level=level)
+    formatter = logging.Formatter(fmt=fmt)
+    file_handler = logging.FileHandler(filename=filename, mode=filemode)
+    file_handler.setFormatter(fmt=formatter)
+    logger.addHandler(hdlr=file_handler)
+    return logger

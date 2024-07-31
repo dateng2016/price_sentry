@@ -1,8 +1,8 @@
 # from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Union
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
-import logging
+
 
 from lib import schemas
 from db import models
@@ -125,6 +125,7 @@ async def get_subscription(
         logger.error(
             f"Failed to get subscription by user id {user_id} and link id {link_id}. {err}"
         )
+        return None
 
 
 async def create_subscription(db: AsyncSession, user_id: str, link_id: str):
@@ -133,6 +134,9 @@ async def create_subscription(db: AsyncSession, user_id: str, link_id: str):
         subscription = models.Subscription(user_id=user_id, link_id=link_id)
         db.add(subscription)
         await db.commit()
+        logger.info(
+            f"Successfully created subscription for user id {user_id} and link id {link_id}"
+        )
         return "Success"
     except Exception as err:
         logger.error(
@@ -140,7 +144,9 @@ async def create_subscription(db: AsyncSession, user_id: str, link_id: str):
         )
 
 
-async def get_all_sub(db: AsyncSession, user_id: str):
+async def get_all_sub(
+    db: AsyncSession, user_id: str
+) -> Optional[List[schemas.Subscription]]:
     try:
         logger.info(f"Getting all subscriptions for user with user id {user_id}")
         res = await db.execute(
@@ -152,9 +158,12 @@ async def get_all_sub(db: AsyncSession, user_id: str):
         logger.error(
             f"Failed to get all subscriptions for user with user id {user_id}. {err}"
         )
+        return None
 
 
-async def unsubscribe(db: AsyncSession, user_id: str, link_id: str):
+async def unsubscribe(
+    db: AsyncSession, user_id: str, link_id: str
+) -> Union[schemas.SuccessResp, schemas.FailureResp]:
     try:
         logger.info(
             f"Unsubscribing product with link id {link_id} for user with user id {user_id}"

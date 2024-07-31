@@ -22,14 +22,6 @@ HTML_PATH = CURRENT_DIR + "/html"
 
 # Configure logging
 
-
-# logger = logging.getLogger(name=__name__)
-# logger.setLevel(level=logging.INFO)
-# formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - AMAZON - %(message)s")
-# file_handler = logging.FileHandler(filename="log/scraper.log", mode="a")
-# file_handler.setFormatter(fmt=formatter)
-# logger.addHandler(hdlr=file_handler)
-
 logger = get_logger(
     name=__name__,
     filename="log/scraper.log",

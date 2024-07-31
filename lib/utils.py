@@ -5,7 +5,6 @@ from typing import Annotated, Union
 import logging
 import hashlib
 
-
 from config import *
 
 security = HTTPBearer()

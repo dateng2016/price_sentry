@@ -1,7 +1,5 @@
 from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional, List, Dict, Literal
-import decimal
 from enum import Enum
 
 VendorType = Literal["amazon", "bestbuy", "ebay"]

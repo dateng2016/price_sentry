@@ -1,6 +1,5 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.types import DECIMAL, SmallInteger
-from sqlalchemy.orm import relationship
 from .base import Base
 
 

@@ -33,8 +33,6 @@ async def confirm_otp(
 async def get_user_info(
     user_id: UserAuthDep, user_service: UserService = Depends()
 ) -> schemas.User:
-    # Update user info
-    print(f" Here is the user id from jwt token: {user_id}")
     user = await user_service.get_user_by_id(user_id=user_id)
     return user
 
@@ -44,7 +42,7 @@ async def update_user_info(
     user_info_req: schemas.UserUpdateReq,
     user_id: UserAuthDep,
     user_service: UserService = Depends(),
-) -> schemas.SuccessResp:
+) -> Union[schemas.SuccessResp, schemas.FailureResp]:
     return await user_service.update_user(
         user_id=user_id,
         first_name=user_info_req.first_name,

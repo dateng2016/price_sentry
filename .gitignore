@@ -1,5 +1,5 @@
 *.html
 __pycache__/
 .env
-# log/
+log/
 *.log

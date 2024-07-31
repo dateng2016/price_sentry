@@ -120,6 +120,11 @@ class UserService:
                 detail="Unable to update user info at the moment, please try again later"
             )
 
+    async def delete_user(
+        self, user_id: str
+    ) -> Union[schemas.SuccessResp, schemas.FailureResp]:
+        return await crud.delete_user(db=self.async_db, user_id=user_id)
+
     def get_random_otp(self) -> str:
         return str(random.randint(10000, 99999))
 

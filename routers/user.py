@@ -48,3 +48,10 @@ async def update_user_info(
         first_name=user_info_req.first_name,
         last_name=user_info_req.last_name,
     )
+
+
+@router.delete("/info")
+async def delete_user(
+    user_id: UserAuthDep, user_service: UserServiceDep
+) -> Union[schemas.SuccessResp, schemas.FailureResp]:
+    return await user_service.delete_user(user_id=user_id)

@@ -24,7 +24,7 @@ async def get_user_by_id(db: AsyncSession, user_id: str) -> Optional[schemas.Use
         logger.info(f"Getting user by id: {user_id}")
         res = await db.execute(select(models.User).where(models.User.id == user_id))
         user = res.scalar()
-        print(f"Found user: {user}")
+        logger.info(f"Found user: {user}")
         return user
     except Exception as err:
         logger.error(f"Failed to get user by id: {user_id}. {err}")
@@ -70,6 +70,28 @@ async def update_user(db: AsyncSession, user_id: str, first_name: str, last_name
     except Exception as err:
         logger.error(f"Failed to update user info with user_id {user_id}. {err}")
         return
+
+
+async def delete_user(
+    db: AsyncSession, user_id: str
+) -> Union[schemas.SuccessResp, schemas.FailureResp]:
+    try:
+        res = await db.execute(select(models.User).where(models.User.id == user_id))
+        user = res.scalar()
+        if user:
+            await db.delete(user)
+            await db.commit()
+            logger.info(f"Successfully deleted user with id {user_id}")
+            return schemas.SuccessResp(
+                detail=f"Successfully deleted user with is{user_id}"
+            )
+        logger.info(f"Cannot find user with id {user_id}")
+        return schemas.FailureResp(detail=f"Cannot find user with id {user_id}")
+    except Exception as err:
+        logger.error(f"Failed to user with user id {user_id} failed. {err}")
+        return schemas.FailureResp(
+            detail=f"Failed to user with user id {user_id} failed."
+        )
 
 
 async def get_product_by_id(

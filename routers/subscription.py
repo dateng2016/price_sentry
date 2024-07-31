@@ -4,12 +4,9 @@ from typing import Annotated, Union, Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from services.user_service import UserService
 from services.subscription_service import SubscriptionService
 from lib import schemas
 from lib.utils import UserAuthDep
-from scraper.amazon import amazon_search
-from db import crud
 from db.base import get_async_db
 
 router = APIRouter(prefix="/sub", tags=["Subscription"])

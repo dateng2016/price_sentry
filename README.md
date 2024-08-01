@@ -74,3 +74,17 @@ Now, you are ready to start the service! Simply go into the root directory of th
 ```bash
 uvicorn app:app --reload
 ```
+
+Once you get the service started, also remember to run the `price_monitor.py` in the background so that it can track the price of the products in the database and notify the corresponding users when the prices fluctuate.
+
+```bash
+python price_monitor.py
+```
+
+## Usage
+
+There is a `test.ipynb` file included in the root directory for testing.
+
+## API Endpoints
+
+For detailed information on how each API endpoint does, please visit the `127.0.0.1:8000/docs` documentation website once you get the service up and running.

@@ -28,7 +28,9 @@ logger = get_logger(
 )
 
 
-def amazon_search(keyword: str, include: str = None) -> Optional[List[schemas.Product]]:
+def amazon_search(
+    keyword: str, include: str = None, max_prod: int = 3
+) -> Optional[List[schemas.Product]]:
 
     include = include or ""
     include_ls = include.split(" ")
@@ -65,8 +67,10 @@ def amazon_search(keyword: str, include: str = None) -> Optional[List[schemas.Pr
     products = []
     html_str = ""  # For debugging purpose
 
-    count = 0  # During DEV mode, we limit the number of iteration to avoid taking up too much time for testing.
-    max_iter = 5
+    count = (
+        -1
+    )  # During DEV mode, we limit the number of iteration to avoid taking up too much time for testing.
+    max_iter = max_prod
 
     for potential_product in potential_products:
         count += 1

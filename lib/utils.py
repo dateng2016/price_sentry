@@ -4,11 +4,16 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Annotated, Union
 import logging
 import hashlib
+from sqlalchemy.ext.asyncio import AsyncSession
 
+
+from db.base import get_async_db
+from db import crud
 from config import *
 
 security = HTTPBearer()
 SettingsDep = Annotated[Settings, Depends(get_settings)]
+AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_db)]
 
 
 def parse_jwt_token(token: str, secret: str):
@@ -25,12 +30,16 @@ def parse_jwt_token(token: str, secret: str):
         return None
 
 
-def get_user_id(
+async def get_user_id(
     token: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     settings: SettingsDep,
+    db: AsyncSessionDep,
 ) -> Union[HTTPException, str]:
     payload = parse_jwt_token(token=token.credentials, secret=settings.secret)
     if payload and payload.get("user_id"):
+        user = await crud.get_user_by_id(db=db, user_id=payload.get("user_id"))
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
         return payload.get("user_id")
     raise HTTPException(status_code=401, detail="Missing authentication credentials")
 

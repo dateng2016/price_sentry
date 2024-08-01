@@ -23,12 +23,10 @@ def search(
     kw: str,
     vendor: schemas.VendorType,
     include: str = None,
+    max_prod: int = 3,
 ) -> Optional[List[schemas.Product]]:
     return sub_service.search(
-        user_id=user_id,
-        kw=kw,
-        vendor=vendor,
-        include=include,
+        user_id=user_id, kw=kw, vendor=vendor, include=include, max_prod=max_prod
     )
 
 

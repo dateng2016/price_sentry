@@ -34,13 +34,18 @@ class SubscriptionService:
         self.async_db = async_db
 
     def search(
-        self, user_id: str, kw: str, vendor: schemas.VendorType, include: str = None
+        self,
+        user_id: str,
+        kw: str,
+        vendor: schemas.VendorType,
+        include: str = None,
+        max_prod: int = 3,
     ) -> Optional[List[schemas.Product]]:
         logger.info(
             f"Initializing product search for user id {user_id}, keyword {kw}, vendor {vendor}, must include keyword {include}"
         )
         if vendor == "amazon":
-            products = amazon_search(keyword=kw, include=include)
+            products = amazon_search(keyword=kw, include=include, max_prod=max_prod)
             if products:
                 logger.info(
                     f"Products found for user id {user_id}, keyword {kw}, vendor {vendor}, must include keyword {include}"

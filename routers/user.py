@@ -17,6 +17,7 @@ UserServiceDep = Annotated[UserService, Depends(UserService)]
 def sign_in_otp(
     sign_in_req: schemas.SignInOtpReq, user_service: UserServiceDep
 ) -> JSONResponse:
+    """hahaha"""
     return user_service.sign_in(email=sign_in_req.email)
 
 

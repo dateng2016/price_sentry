@@ -21,10 +21,9 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 HTML_PATH = CURRENT_DIR + "/html"
 
 # Configure logging
-
 logger = get_logger(
     name=__name__,
-    filename="log/scraper.log",
+    filename=os.getcwd() + "/log/scraper.log",
     fmt="%(asctime)s - %(levelname)s - AMAZON - %(message)s",
 )
 

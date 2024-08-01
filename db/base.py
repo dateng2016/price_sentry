@@ -20,7 +20,7 @@ async_engine = create_async_engine(
     max_overflow=5,
 )
 
-SyncSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=async_engine)
+SyncSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sync_engine)
 
 AsyncSessionLocal = async_sessionmaker(
     autocommit=False, autoflush=False, bind=async_engine

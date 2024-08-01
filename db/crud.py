@@ -2,6 +2,7 @@
 from typing import List, Optional, Union
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
+from sqlalchemy.orm import Session
 
 
 from lib import schemas
@@ -128,6 +129,10 @@ async def create_product(db: AsyncSession, product: schemas.Product):
         logger.error(
             f"Failed to create product with title {product.title}, vendor of {schemas.Vendor(product.vendor)}, link {product.link}, link id {product.link_id}, img src {product.img_src}, price {product.price}. {err}"
         )
+
+
+def update_product_price(db: Session, link_id: str, new_price: float):
+    pass
 
 
 async def get_subscription(

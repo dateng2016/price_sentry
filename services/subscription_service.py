@@ -108,6 +108,30 @@ class SubscriptionService:
     async def unsubscribe(
         self, user_id: str, link_id: str
     ) -> Union[schemas.SuccessResp, schemas.FailureResp]:
+        """
+        Unsubscribe the authenticated user from a product.
+
+        This endpoint allows a user to unsubscribe from a product based on the product's link ID. It calls the
+        `unsubscribe` method of the subscription service to handle the unsubscription process.
+
+        Args:
+            user_id (UserAuthDep): The ID of the authenticated user who wants to unsubscribe from the product.
+            link_id (str): The unique identifier of the product to unsubscribe from.
+            sub_service (SubServiceDep): Dependency injection for the service handling subscription logic.
+
+        Returns:
+            Union[schemas.SuccessResp, schemas.FailureResp]:
+                - `schemas.SuccessResp`: Indicates that the unsubscription was successful with a success message.
+                - `schemas.FailureResp`: Indicates failure to unsubscribe, with a detailed error message.
+
+        Raises:
+            HTTPException: May raise an HTTP 400 Bad Request if there are issues with the unsubscription request.
+
+        Notes:
+            - This endpoint requires the user to be authenticated. The user ID must be valid and correspond to an
+              existing user in the system.
+            - The `link_id` should be a valid identifier for a product that the user is currently subscribed to.
+        """
         logger.info(f"Unsubscribing for user {user_id} the product with id {link_id}")
         result = await crud.unsubscribe(
             db=self.async_db, user_id=user_id, link_id=link_id

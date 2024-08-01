@@ -2,6 +2,8 @@
 
 Price Sentry is a FastAPI-based application that allows users to search for products on vendors like Amazon, track price changes, and receive notifications when their desired products' prices fluctuate.
 
+**Note:** Currently, Price Sentry only supports Amazon as a vendor. Support for additional vendors is being developed. Additionally, the frontend for this project is still in development.
+
 ## Table of Contents
 
 -   [Features](#features)

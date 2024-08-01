@@ -8,7 +8,6 @@ Price Sentry is a FastAPI-based application that allows users to search for prod
 -   [Installation](#installation)
 -   [Usage](#usage)
 -   [API Endpoints](#api-endpoints)
--   [Configuration](#configuration)
 -   [License](#license)
 -   [Contact](#contact)
 
@@ -83,8 +82,25 @@ python price_monitor.py
 
 ## Usage
 
-There is a `test.ipynb` file included in the root directory for testing.
+For testing, a test.ipynb file is included in the root directory.
 
 ## API Endpoints
 
-For detailed information on how each API endpoint does, please visit the `127.0.0.1:8000/docs` documentation website once you get the service up and running.
+For detailed information on the API endpoints, visit the documentation at http://127.0.0.1:8000/docs once the service is up and running.
+
+## License
+
+This project is licensed under the MIT License.
+
+### License Summary
+
+MIT License: You are free to use, modify, and distribute the software, provided that all copies include the original copyright and license notice. This license also provides a disclaimer of warranties, meaning that the software is provided "as is" without any guarantees or warranties.
+
+## Contact
+
+For any questions or inquiries, please contact:
+
+Project Maintainer: Da Teng
+Support Email: dateng2016@gmail.com
+Project Repository: https://github.com/dateng2016/price_sentry
+Feel free to open an issue or submit a pull request on the GitHub repository if you have suggestions or improvements.
